@@ -1,7 +1,8 @@
-import assert from "node:assert";
-import test from "node:test";
+// common.test.mjs (Converted to Jest)
 import { countUsers } from "./common.mjs";
 
-test("User count is correct", () => {
-  assert.equal(countUsers(), 4);
+describe("User count", () => {
+  test("is correct", () => {
+    expect(countUsers()).toBe(4);
+  });
 });

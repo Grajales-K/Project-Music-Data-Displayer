@@ -43,7 +43,6 @@ function createUI() {
   // --------- Create Section to display userData --------------
   // Assign to global variable userDataDisplay directly after creation
   userDataDisplay = document.createElement("section");
-  // FIX: Corrected typo from "user-date-display" to "user-data-display"
   userDataDisplay.id = "user-data-display";
 
   const initialMessage = document.createElement("p");
@@ -56,6 +55,32 @@ function createUI() {
 
   // ---------------  append entire main to body   ----------------
   document.body.appendChild(main);
+}
+
+// --- NEW FUNCTION ADDED: appendQuestionAnswerRow ---
+// This helper function simplifies adding rows to our table later.
+// It will only add a row if there's an actual answer.
+/**
+ * Helper function to append a question-answer row to the data table.
+ * If the answer is null or undefined or an empty string, the row will not be appended.
+ * @param {HTMLElement} tableBody - The <tbody> element to append the row to.
+ * @param {string} questionText - The text for the question cell.
+ * @param {string|null} answerText - The text for the answer cell, or null/undefined/empty string if no answer.
+ */
+function appendQuestionAnswerRow(tableBody, questionText, answerText) {
+  // Conceptual Understanding: Only create and add the row if we have a valid answer.
+  if (answerText !== null && answerText !== undefined && answerText !== "") {
+    const row = document.createElement("tr"); // Create a table row (like <tr>)
+
+    const questionCell = document.createElement("td"); // Create first table data cell (like <td>)
+    questionCell.textContent = questionText;
+    row.appendChild(questionCell);
+    const answerCell = document.createElement("td");
+    answerCell.textContent = answerText;
+    row.appendChild(answerCell);
+
+    tableBody.appendChild(row);
+  }
 }
 
 /**
@@ -100,7 +125,7 @@ function calculateMostListenedSongByCount(listenEvents) {
       return `${song.artist} - ${song.title}`;
     }
   }
-  // Conceptual Understanding: If no most listened song was found (e.g., no valid songs in data).
+  // If no most listened song was found (e.g., no valid songs in data).
   return null;
 }
 
@@ -155,29 +180,38 @@ function handleUserSelection() {
       const noDataMessage = document.createElement("p");
       noDataMessage.textContent = `No music for this user`; // Matching your screenshot message.
       userDataDisplay.appendChild(noDataMessage);
-      return; // Stop here, no more calculations or display for this user.
+      return; // Exit if no data to display.
     }
 
-    // --- NEW LOGIC: Calculate and display only the most listened song by count ---
-    // Conceptual Understanding:
-    // STEP 1: We call our specialized function to calculate the most listened song.
+    // --- NEW LOGIC: Create the table structure and headers ---
+    const dataTable = document.createElement("table");
+
+    const tableHead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const questionHeader = document.createElement("th");
+    questionHeader.textContent = "Question";
+    headerRow.appendChild(questionHeader);
+
+    const answerHeader = document.createElement("th");
+    answerHeader.textContent = "Answer";
+    headerRow.appendChild(answerHeader);
+
+    tableHead.appendChild(headerRow);
+    dataTable.appendChild(tableHead);
+
+    const tableBody = document.createElement("tbody");
+    dataTable.appendChild(tableBody);
+    userDataDisplay.appendChild(dataTable);
+
     // It takes the 'listenEvents' (the raw data) and gives us back the answer string.
     const mostListenedSong = calculateMostListenedSongByCount(listenEvents);
 
-    // Conceptual Understanding:
-    // STEP 2: We create a new HTML paragraph (<p>) element to hold our answer.
-    const resultParagraph = document.createElement("p");
-
-    // Conceptual Understanding:
-    // STEP 3: We set the text inside this new paragraph element.
-    // We combine the question text with the calculated answer.
-    resultParagraph.textContent = `Most listened song (count): ${mostListenedSong}`;
-
-    // Conceptual Understanding:
-    // STEP 4: We add this newly created paragraph to our 'userDataDisplay' section.
-    // This makes the answer visible on the web page.
-    userDataDisplay.appendChild(resultParagraph);
-    // --- END NEW LOGIC ---
+    //reusable 'appendQuestionAnswerRow' function, it also hides the row if the answer is null/empty.
+    appendQuestionAnswerRow(
+      tableBody,
+      "Most listened song (count)",
+      mostListenedSong
+    );
   } else {
     console.log("No user selected. ");
     // Conceptual Understanding: If no user is selected, display the initial prompt message.

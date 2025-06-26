@@ -1,18 +1,17 @@
-// This is a placeholder file which shows how you can access functions defined in other files.
-// It can be loaded into index.html.
-// You can delete the contents of the file once you have understood how it works.
-// Note that when running locally, in order to open a web page which uses modules, you must serve the directory over HTTP e.g. with https://www.npmjs.com/package/http-server
-// You can't open the index.html file using a file:// URL.
+// script.mjs
+// This is the main JavaScript file for your web application.
+// It handles DOM manipulation and integrates with your data module.
 
-import { getUserIDs } from "./data.mjs";
+// Import the getUserIDs function from the data.mjs file.
+import { getUserIDs } from "./data.mjs"; // Assuming data.mjs reflects your data.js structure
 
-let userSelect;
-let userDataDisplay;
+// --- Global DOM Element References (will be assigned after creation) ---
+let userSelect; // Reference to the <select> element
+let userDataDisplay; // Reference to the <section> where user data is shown
 
 /**
- * create the entire application UI Dynamically using Dom 
+ * Creates the entire application UI dynamically using DOM manipulation.
  */
-
 function createUI() {
   const main = document.createElement("main");
 
@@ -24,12 +23,13 @@ function createUI() {
   const dropdownSection = document.createElement("section");
   const label = document.createElement("label");
   label.setAttribute("for", "user-select");
-  label.textContent = "User : ";
+  label.textContent = "Select User : 👉 ";
   dropdownSection.appendChild(label);
 
   // ------------------ User Selectors -----------------------
+  // Assign to global variable userSelect directly after creation
   userSelect = document.createElement("select");
-  userSelect.id = "user-select";
+  userSelect.id = "user-select"; // Set ID for reference and label linking
 
   const defaultOption = document.createElement("option");
   defaultOption.value = "";
@@ -41,8 +41,10 @@ function createUI() {
   main.appendChild(dropdownSection);
 
   // --------- Create Section to display userData --------------
+  // Assign to global variable userDataDisplay directly after creation
   userDataDisplay = document.createElement("section");
-  userDataDisplay.id = "user-date-display";
+  // FIX: Corrected typo from "user-date-display" to "user-data-display"
+  userDataDisplay.id = "user-data-display";
 
   const initialMessage = document.createElement("p");
   initialMessage.textContent =
@@ -56,12 +58,23 @@ function createUI() {
   document.body.appendChild(main);
 }
 
+/**
+ * Populates the user selection dropdown with user IDs.
+ * This function now uses the global referenced 'userSelect' element.
+ * @param {string[]} userIDs   An array of user ID strings.
+ */
+function populateUserDropdown(userIDs) {
+  if (!userSelect) {
+    console.error(
+      "populateUserDropdown: UserSelect element not Found. UI Might not be created yet."
+    );
+    return;
+  }
 
-
-
-
-
-
-
-console.log("script.mjs loaded");
-createUI();
+  userIDs.forEach((userID) => {
+    const option = document.createElement("option");
+    option.value = userID;
+    option.textContent = ` User ${userID} 🎧`;
+    userSelect.appendChild(option);
+  });
+}

@@ -1,5 +1,5 @@
 // script.mjs
-// This is the main JavaScript file for your web application.
+// This is the main JavaScript file for web application
 // It handles DOM manipulation and integrates with your data module.
 
 // Import the getUserIDs function from the data.mjs file.
@@ -78,3 +78,43 @@ function populateUserDropdown(userIDs) {
     userSelect.appendChild(option);
   });
 }
+
+/**
+ * Handles the change event on the user dropdown.
+ * This function now uses the globally referenced 'userSelect' and  'userDataDisplay' elements.
+ */
+function handleUserSelection() {
+  //ensure the elements are available
+  if (!userSelect || !userDataDisplay) {
+    console.error("handleUserSelection: UI elements not found for selection handling. ");
+    return;
+  }
+
+  const selectedUserID = userSelect.value;
+
+  if (selectedUserID) {
+    console.log(`User selected: ${selectedUserID}`);
+    userDataDisplay.innerHTML = `<p>Data for User ${selectedUserID} will be displayed here </p>`;
+  } else {
+    console.log("No user selected. ");
+    
+    userDataDisplay.innerHTML = `<p>Please select a user from the dropdown above to view their music listening data.</p>`;
+  }
+}
+
+
+// Add an event listener that waits for the entire HTML document to be fully loaded and parsed.
+document.addEventListener('DOMContentLoaded', () => {
+  // First, create all UI elements.
+  createUI();
+
+  // Now UI is created and elements are accessible, populate the dropdown and attach the event lis.
+  const userIDs = getUserIDs();
+  populateUserDropdown(userIDs);
+
+  // -- attach the event listener to the dynamically created select elements.
+  // -- userSelect is already a global reference from createUI()
+  userSelect.addEventListener('change', handleUserSelection);
+
+  console.log("Application initialized successfully.");
+});

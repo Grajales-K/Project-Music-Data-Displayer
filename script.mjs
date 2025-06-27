@@ -363,8 +363,8 @@ function handleUserSelection() {
     // --- NEW LOGIC: Add the most listened song (by time) row ---
     appendQuestionAnswerRow(
       tableBody,
-      "Most listened song (time)", // The question text.
-      mostListenedSongByTime       // The calculated answer (by time).
+      "Most listened song (time)",
+      mostListenedSongByTime      
     );
     // --- END NEW LOGIC ---
 
